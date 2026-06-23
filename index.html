@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Chấm Điểm Dạy Thử - Bảo Vệ Lên Rank Giảng Viên</title>
+    <meta name="description" content="Ứng dụng chấm điểm buổi dạy thử bảo vệ lên rank giảng viên">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-msg" id="toastMsg">Đã lưu thành công!</span>
+    </div>
+
+    <!-- ========== SCREEN 1: Login ========== -->
+    <section class="screen active" id="screenLogin">
+        <div class="login-card glass">
+            <div class="login-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M24 4L4 14l20 10 20-10L24 4z" fill="url(#g1)" opacity="0.9"/>
+                        <path d="M4 14v16l20 10V24L4 14z" fill="url(#g2)" opacity="0.8"/>
+                        <path d="M44 14v16L24 40V24l20-10z" fill="url(#g3)" opacity="0.7"/>
+                        <defs>
+                            <linearGradient id="g1" x1="4" y1="4" x2="44" y2="24">
+                                <stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                            <linearGradient id="g2" x1="4" y1="14" x2="24" y2="40">
+                                <stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#a78bfa"/>
+                            </linearGradient>
+                            <linearGradient id="g3" x1="44" y1="14" x2="24" y2="40">
+                                <stop stop-color="#6366f1"/><stop offset="1" stop-color="#818cf8"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1>Chấm Điểm Dạy Thử</h1>
+                <p class="subtitle">Bảo vệ lên rank Giảng Viên</p>
+            </div>
+
+            <form id="loginForm" class="login-form" autocomplete="off">
+                <div class="input-group">
+                    <label for="scheduleSelect">Chọn lịch đánh giá</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        <select id="scheduleSelect" required>
+                            <option value="" disabled selected>-- Chọn lịch đánh giá --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: flex; gap: 12px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="reviewerName">Tên người chấm</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <input type="text" id="reviewerName" placeholder="Tên của bạn..." required>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="flex: 1;">
+                        <label for="reviewerPhone">Số điện thoại</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            <input type="tel" id="reviewerPhone" placeholder="SĐT..." required pattern="[0-9]{10,11}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="lecturerSelect">Chọn giảng viên</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <select id="lecturerSelect" required disabled>
+                            <option value="" disabled selected>-- Chọn lịch đánh giá trước --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="lessonName">Bài giảng</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                        <input type="text" id="lessonName" placeholder="Tự động điền..." readonly class="input-readonly">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btnStart">
+                    <span>Bắt đầu chấm điểm</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ========== SCREEN 2: Scoring Form ========== -->
+    <section class="screen" id="screenScoring">
+        <div class="scoring-container">
+            <!-- Header -->
+            <header class="scoring-header glass">
+                <div class="header-info">
+                    <h2>Phiếu Chấm Điểm Dạy Thử</h2>
+                    <div class="lecturer-badge">
+                        <span class="badge-name" id="displayName"></span>
+                        <span class="badge-divider">•</span>
+                        <span class="badge-lesson" id="displayLesson"></span>
+                    </div>
+                </div>
+                <div class="header-score">
+                    <div class="total-score-ring">
+                        <svg viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" class="ring-bg"/>
+                            <circle cx="60" cy="60" r="52" class="ring-fill" id="scoreRing"/>
+                        </svg>
+                        <div class="score-text">
+                            <span class="score-number" id="totalScore">0</span>
+                            <span class="score-label">/ 100</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Criteria Groups -->
+            <form id="scoringForm">
+                <!-- Group I -->
+                <div class="criteria-group glass" data-group="1">
+                    <div class="group-header">
+                        <div class="group-badge">I</div>
+                        <div class="group-title">
+                            <h3>Nội dung bài giảng</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore1">0</strong>/25</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress1" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="1" data-max="5" data-group-id="1">
+                            <div class="criteria-info">
+                                <span class="criteria-number">1</span>
+                                <span class="criteria-text">Xác định đúng mục tiêu bài học (kiến thức, kỹ năng, thái độ)</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="1">
+                                <div class="slider-value"><span id="val1">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="2" data-max="5" data-group-id="1">
+                            <div class="criteria-info">
+                                <span class="criteria-number">2</span>
+                                <span class="criteria-text">Nội dung chính xác, khoa học, cập nhật</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="2">
+                                <div class="slider-value"><span id="val2">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="3" data-max="5" data-group-id="1">
+                            <div class="criteria-info">
+                                <span class="criteria-number">3</span>
+                                <span class="criteria-text">Bố cục bài giảng logic, mạch lạc</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="3">
+                                <div class="slider-value"><span id="val3">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="4" data-max="5" data-group-id="1">
+                            <div class="criteria-info">
+                                <span class="criteria-number">4</span>
+                                <span class="criteria-text">Liên hệ thực tiễn, ví dụ minh họa phù hợp</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="4">
+                                <div class="slider-value"><span id="val4">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="5" data-max="5" data-group-id="1">
+                            <div class="criteria-info">
+                                <span class="criteria-number">5</span>
+                                <span class="criteria-text">Phân bổ thời gian hợp lý cho từng phần</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="5">
+                                <div class="slider-value"><span id="val5">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group II -->
+                <div class="criteria-group glass" data-group="2">
+                    <div class="group-header">
+                        <div class="group-badge">II</div>
+                        <div class="group-title">
+                            <h3>Phương pháp giảng dạy</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore2">0</strong>/20</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress2" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="6" data-max="5" data-group-id="2">
+                            <div class="criteria-info">
+                                <span class="criteria-number">6</span>
+                                <span class="criteria-text">Lựa chọn phương pháp phù hợp với nội dung và đối tượng</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="6">
+                                <div class="slider-value"><span id="val6">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="7" data-max="5" data-group-id="2">
+                            <div class="criteria-info">
+                                <span class="criteria-number">7</span>
+                                <span class="criteria-text">Kết hợp linh hoạt nhiều phương pháp giảng dạy</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="7">
+                                <div class="slider-value"><span id="val7">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="8" data-max="5" data-group-id="2">
+                            <div class="criteria-info">
+                                <span class="criteria-number">8</span>
+                                <span class="criteria-text">Phát huy tính chủ động, tư duy phản biện của người học</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="8">
+                                <div class="slider-value"><span id="val8">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="9" data-max="5" data-group-id="2">
+                            <div class="criteria-info">
+                                <span class="criteria-number">9</span>
+                                <span class="criteria-text">Gợi mở vấn đề, dẫn dắt người học khám phá kiến thức</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="9">
+                                <div class="slider-value"><span id="val9">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group III -->
+                <div class="criteria-group glass" data-group="3">
+                    <div class="group-header">
+                        <div class="group-badge">III</div>
+                        <div class="group-title">
+                            <h3>Sử dụng phương tiện & CNTT</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore3">0</strong>/10</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress3" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="10" data-max="5" data-group-id="3">
+                            <div class="criteria-info">
+                                <span class="criteria-number">10</span>
+                                <span class="criteria-text">Slide / tài liệu trực quan rõ ràng, thẩm mỹ</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="10">
+                                <div class="slider-value"><span id="val10">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="11" data-max="5" data-group-id="3">
+                            <div class="criteria-info">
+                                <span class="criteria-number">11</span>
+                                <span class="criteria-text">Sử dụng hiệu quả công cụ hỗ trợ giảng dạy</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="11">
+                                <div class="slider-value"><span id="val11">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group IV -->
+                <div class="criteria-group glass" data-group="4">
+                    <div class="group-header">
+                        <div class="group-badge">IV</div>
+                        <div class="group-title">
+                            <h3>Kỹ năng trình bày & giao tiếp</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore4">0</strong>/15</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress4" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="12" data-max="5" data-group-id="4">
+                            <div class="criteria-info">
+                                <span class="criteria-number">12</span>
+                                <span class="criteria-text">Giọng nói rõ ràng, truyền cảm, tốc độ phù hợp</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="12">
+                                <div class="slider-value"><span id="val12">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="13" data-max="5" data-group-id="4">
+                            <div class="criteria-info">
+                                <span class="criteria-number">13</span>
+                                <span class="criteria-text">Ngôn ngữ chính xác, sử dụng đúng thuật ngữ chuyên ngành</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="13">
+                                <div class="slider-value"><span id="val13">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="14" data-max="5" data-group-id="4">
+                            <div class="criteria-info">
+                                <span class="criteria-number">14</span>
+                                <span class="criteria-text">Ngôn ngữ cơ thể tự tin, giao tiếp bằng mắt</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="14">
+                                <div class="slider-value"><span id="val14">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group V -->
+                <div class="criteria-group glass" data-group="5">
+                    <div class="group-header">
+                        <div class="group-badge">V</div>
+                        <div class="group-title">
+                            <h3>Quản lý lớp học & tương tác</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore5">0</strong>/10</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress5" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="15" data-max="5" data-group-id="5">
+                            <div class="criteria-info">
+                                <span class="criteria-number">15</span>
+                                <span class="criteria-text">Tạo không khí học tập tích cực, thu hút sự chú ý</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="15">
+                                <div class="slider-value"><span id="val15">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="16" data-max="5" data-group-id="5">
+                            <div class="criteria-info">
+                                <span class="criteria-number">16</span>
+                                <span class="criteria-text">Đặt câu hỏi kích thích tư duy, xử lý phản hồi tốt</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="16">
+                                <div class="slider-value"><span id="val16">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group VI -->
+                <div class="criteria-group glass" data-group="6">
+                    <div class="group-header">
+                        <div class="group-badge">VI</div>
+                        <div class="group-title">
+                            <h3>Đánh giá người học</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore6">0</strong>/10</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress6" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="17" data-max="5" data-group-id="6">
+                            <div class="criteria-info">
+                                <span class="criteria-number">17</span>
+                                <span class="criteria-text">Có hoạt động kiểm tra, củng cố kiến thức</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="17">
+                                <div class="slider-value"><span id="val17">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="18" data-max="5" data-group-id="6">
+                            <div class="criteria-info">
+                                <span class="criteria-number">18</span>
+                                <span class="criteria-text">Tổng kết bài học rõ ràng, giao nhiệm vụ tự học</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="18">
+                                <div class="slider-value"><span id="val18">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group VII -->
+                <div class="criteria-group glass" data-group="7">
+                    <div class="group-header">
+                        <div class="group-badge">VII</div>
+                        <div class="group-title">
+                            <h3>Tác phong sư phạm</h3>
+                            <span class="group-score">Điểm: <strong id="groupScore7">0</strong>/10</span>
+                        </div>
+                        <div class="group-progress">
+                            <div class="progress-bar" id="groupProgress7" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="19" data-max="5" data-group-id="7">
+                            <div class="criteria-info">
+                                <span class="criteria-number">19</span>
+                                <span class="criteria-text">Trang phục, tác phong chuyên nghiệp, đúng mực</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="19">
+                                <div class="slider-value"><span id="val19">0</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="20" data-max="5" data-group-id="7">
+                            <div class="criteria-info">
+                                <span class="criteria-number">20</span>
+                                <span class="criteria-text">Thể hiện sự nhiệt tình, tâm huyết với nghề</span>
+                            </div>
+                            <div class="score-slider">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="20">
+                                <div class="slider-value"><span id="val20">0</span>/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment -->
+                <div class="comment-section glass">
+                    <h3>💬 Nhận xét chung</h3>
+                    <textarea id="comment" rows="4" placeholder="Nhập nhận xét của Hội đồng..."></textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="btnBack">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        <span>Quay lại</span>
+                    </button>
+                    <button type="submit" class="btn-primary btn-submit" id="btnSubmit">
+                        <span>Gửi kết quả</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- ========== SCREEN 3: Result ========== -->
+    <section class="screen" id="screenResult">
+        <div class="result-container">
+            <div class="result-card glass">
+                <div class="result-icon" id="resultIcon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <h2 id="resultTitle">Đã gửi thành công!</h2>
+                <p class="result-subtitle" id="resultSubtitle">Kết quả đã được lưu vào Google Sheet</p>
+
+                <div class="result-summary">
+                    <div class="summary-row">
+                        <span>Giảng viên</span>
+                        <strong id="resultName"></strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Bài giảng</span>
+                        <strong id="resultLesson"></strong>
+                    </div>
+                    <div class="summary-row highlight">
+                        <span>Tổng điểm</span>
+                        <strong id="resultScore"></strong>
+                    </div>
+
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn-secondary" id="btnEdit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        <span>Chỉnh sửa</span>
+                    </button>
+                    <button class="btn-primary" id="btnNew">
+                        <span>Chấm mới</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Đang lưu kết quả...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

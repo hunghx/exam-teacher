@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Lịch Đánh Giá</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-msg" id="toastMsg"></span>
+    </div>
+
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar glass">
+            <div class="sidebar-logo">
+                <div class="logo-dot"></div>
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="schedules">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span>Lịch đánh giá</span>
+                </button>
+                <button class="nav-item" data-tab="create">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                    <span>Tạo mới</span>
+                </button>
+                <button class="nav-item" data-tab="results">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                    </svg>
+                    <span>Kết quả đánh giá</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.html" class="link-scoring">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Trang chấm điểm
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Tab: Schedules List -->
+            <div class="tab-content active" id="tabSchedules">
+                <div class="page-header">
+                    <div>
+                        <h1>Lịch Đánh Giá</h1>
+                        <p class="page-desc">Quản lý các ca test dạy thử</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="https://docs.google.com/spreadsheets/d/14Hv8wnuwCl_91_FjkEMyHeElKcFQs7OrReVVeOcJBYg/edit?gid=1647444902#gid=1647444902" target="_blank" class="btn-secondary btn-compact" style="text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 8 9"></polyline>
+                            </svg>
+                            <span>Xem Sheet</span>
+                        </a>
+                        <button class="btn-primary btn-compact" id="btnNewSchedule">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            <span>Tạo lịch mới</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="results-table-container" id="schedulesContainer" style="display: none;">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Tên ca đánh giá</th>
+                                <th>Ngày đánh giá</th>
+                                <th>Địa điểm</th>
+                                <th>Giảng viên</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedulesGrid">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state-admin" id="emptySchedules">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <h3>Chưa có lịch đánh giá</h3>
+                    <p>Tạo lịch đánh giá mới để bắt đầu</p>
+                </div>
+            </div>
+
+            <!-- Tab: Create Schedule -->
+            <div class="tab-content" id="tabCreate">
+                <div class="page-header">
+                    <div>
+                        <h1 id="formTitle">Tạo Lịch Đánh Giá Mới</h1>
+                        <p class="page-desc">Thiết lập ca test và danh sách giảng viên</p>
+                    </div>
+                </div>
+
+                <form id="scheduleForm" class="schedule-form" autocomplete="off">
+                    <div class="form-card glass">
+                        <h3>📋 Thông tin lịch đánh giá</h3>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="scheduleName">Tên ca đánh giá</label>
+                                <input type="text" id="scheduleName" placeholder="VD: Đợt 1 - Tháng 6/2026" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="scheduleDate">Ngày đánh giá</label>
+                                <input type="date" id="scheduleDate" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="scheduleLocation">Địa điểm</label>
+                            <input type="text" id="scheduleLocation" placeholder="VD: Phòng A301, Tòa nhà B">
+                        </div>
+                    </div>
+
+                    <div class="form-card glass">
+                        <div class="card-header-row">
+                            <h3>👨‍🏫 Danh sách giảng viên</h3>
+                            <span class="gv-count" id="gvCount">0 giảng viên</span>
+                        </div>
+
+                        <div class="add-gv-row" id="addGvRow">
+                            <input type="text" id="gvName" placeholder="Tên giảng viên">
+                            <input type="text" id="gvLesson" placeholder="Bài giảng">
+                            <button type="button" class="btn-add" id="btnAddGv" title="Thêm">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="gv-list" id="gvList">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <div class="form-actions-admin">
+                        <button type="button" class="btn-secondary" id="btnCancelForm">Hủy</button>
+                        <button type="submit" class="btn-primary btn-compact">
+                            <span id="btnSaveText">Lưu lịch đánh giá</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab: Results -->
+            <div class="tab-content" id="tabResults">
+                <div class="page-header">
+                    <div>
+                        <h1>Kết Quả Đánh Giá</h1>
+                        <p class="page-desc">Điểm trung bình của các giảng viên theo đợt</p>
+                    </div>
+                </div>
+
+                <div class="results-controls">
+                    <div class="input-group" style="max-width: 300px; margin-bottom: 24px;">
+                        <label for="resultScheduleSelect">Chọn đợt đánh giá</label>
+                        <select id="resultScheduleSelect">
+                            <option value="" disabled selected>Đang tải dữ liệu...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="results-table-container" id="resultsContainer" style="display: none;">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Giảng Viên</th>
+                                <th>Bài Giảng</th>
+                                <th>Số Lượt Chấm</th>
+                                <th>Điểm Trung Bình</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsGrid">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state-admin" id="emptyResults" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h3>Không có dữ liệu</h3>
+                    <p>Chưa có kết quả chấm điểm nào cho đợt này</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Xem Chi Tiết -->
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2 id="modalGvName">Tên Giảng Viên</h2>
+                <button class="btn-close-modal" id="btnCloseModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-meta">
+                    <p><strong>Bài giảng:</strong> <span id="modalLesson"></span></p>
+                    <p><strong>Lượt chấm:</strong> <span id="modalReviewCount"></span></p>
+                    <p><strong>Tổng điểm TB:</strong> <span id="modalTotalScore" class="highlight-score"></span></p>
+                </div>
+                
+                <h3 style="margin-top: 20px; margin-bottom: 12px; font-size: 1rem; color: var(--text-primary);">Chi tiết 20 tiêu chí (Trung bình)</h3>
+                <div class="criteria-list" id="modalCriteriaList">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
