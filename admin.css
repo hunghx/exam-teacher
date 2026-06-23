@@ -323,6 +323,21 @@ body {
     font-weight: 600;
 }
 
+.time-slot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
 .btn-outline {
     flex: 1;
     background: transparent;

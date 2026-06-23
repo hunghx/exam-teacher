@@ -94,8 +94,10 @@
                             <tr>
                                 <th>Tên ca đánh giá</th>
                                 <th>Ngày đánh giá</th>
+                                <th>Khung giờ</th>
                                 <th>Địa điểm</th>
                                 <th>Giảng viên</th>
+                                <th>Hội đồng</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
@@ -140,9 +142,22 @@
                             </div>
                         </div>
 
-                        <div class="input-group">
-                            <label for="scheduleLocation">Địa điểm</label>
-                            <input type="text" id="scheduleLocation" placeholder="VD: Phòng A301, Tòa nhà B">
+                        <div class="form-row" style="margin-bottom: 20px;">
+                            <div class="input-group">
+                                <label for="scheduleLocation">Địa điểm</label>
+                                <input type="text" id="scheduleLocation" placeholder="VD: Phòng A301, Tòa nhà B">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="scheduleStartTime">Khung giờ bắt đầu</label>
+                                <input type="time" id="scheduleStartTime" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="scheduleEndTime">Khung giờ kết thúc</label>
+                                <input type="time" id="scheduleEndTime" required>
+                            </div>
                         </div>
                     </div>
 
@@ -163,6 +178,27 @@
                         </div>
 
                         <div class="gv-list" id="gvList">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <div class="form-card glass">
+                        <div class="card-header-row">
+                            <h3>👥 Danh sách Hội đồng chấm</h3>
+                            <span class="gv-count" id="committeeCount">0 thành viên</span>
+                        </div>
+
+                        <div class="add-gv-row" id="addCommitteeRow">
+                            <input type="text" id="committeeName" placeholder="Tên thành viên">
+                            <input type="email" id="committeeEmail" placeholder="Email nhận mã">
+                            <button type="button" class="btn-add" id="btnAddCommittee" title="Thêm">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="gv-list" id="committeeList">
                             <!-- Rendered by JS -->
                         </div>
                     </div>

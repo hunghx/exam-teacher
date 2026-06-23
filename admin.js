@@ -5,11 +5,12 @@ const $$ = (sel) => document.querySelectorAll(sel);
 let schedules = [];
 let currentScheduleId = null;
 let currentGvList = [];
+let currentCommitteeList = [];
 let allResults = [];
 let groupedResults = {};
 
 // API Config
-const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwOiSL0MaTr1mJSERNr9Bf701n32bVJNz-w2PyYp434WnlqKGhWcBiZduVsd1H-744Y/exec';
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzczp0JYDLuYWl8RPA3eJ_Xc1wH_CB-YLDjSoHh9v2O_T9foEs1vDNnqdIEEWKgdrmx/exec';
 
 // DOM Elements
 const tabBtns = $$('.nav-item');
@@ -58,6 +59,10 @@ async function loadSchedules() {
 
         if (data.status === 'success') {
             schedules = data.data || [];
+            schedules.forEach(s => {
+                s.startTime = formatTime(s.startTime);
+                s.endTime = formatTime(s.endTime);
+            });
             renderSchedules();
         } else {
             showToast('Lỗi tải dữ liệu', true);
@@ -133,15 +138,35 @@ function initEvents() {
         renderGvList();
     });
 
+    // Add Committee member
+    $('#btnAddCommittee').addEventListener('click', () => {
+        const name = $('#committeeName').value.trim();
+        const email = $('#committeeEmail').value.trim();
+
+        if (!name) return showToast('Vui lòng nhập tên thành viên Hội đồng', true);
+        if (!email) return showToast('Vui lòng nhập email', true);
+
+        currentCommitteeList.push({ name, email });
+        $('#committeeName').value = '';
+        $('#committeeEmail').value = '';
+        $('#committeeName').focus();
+        renderCommitteeList();
+    });
+
     // Save Schedule
     scheduleForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = $('#scheduleName').value.trim();
         const date = $('#scheduleDate').value;
         const location = $('#scheduleLocation').value.trim();
+        const startTime = $('#scheduleStartTime').value;
+        const endTime = $('#scheduleEndTime').value;
 
         if (currentGvList.length === 0) {
             return showToast('Vui lòng thêm ít nhất 1 giảng viên', true);
+        }
+        if (currentCommitteeList.length === 0) {
+            return showToast('Vui lòng thêm ít nhất 1 thành viên Hội đồng', true);
         }
 
         const schedule = {
@@ -149,7 +174,10 @@ function initEvents() {
             name,
             date,
             location,
-            lecturers: [...currentGvList]
+            startTime,
+            endTime,
+            lecturers: [...currentGvList],
+            committee: [...currentCommitteeList]
         };
 
         if (currentScheduleId) {
@@ -229,9 +257,15 @@ function renderSchedules() {
         tr.innerHTML = `
             <td class="td-gv-name">${escapeHtml(schedule.name)}</td>
             <td class="td-lesson">${formatDate(schedule.date)}</td>
+            <td class="td-lesson">${schedule.startTime && schedule.endTime
+                ? `<span class="time-slot-badge">🕐 ${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</span>`
+                : '<span style="color:#94a3b8">—</span>'
+            }</td>
             <td class="td-lesson">${schedule.location ? escapeHtml(schedule.location) : '-'}</td>
-            <td><span class="stat-badge">${schedule.lecturers.length} GV</span></td>
-            <td class="td-action" style="display:flex;gap:8px;">
+            <td><span class="stat-badge">${schedule.lecturers ? schedule.lecturers.length : 0} GV</span></td>
+            <td><span class="stat-badge">${schedule.committee ? schedule.committee.length : 0} Hội đồng</span></td>
+            <td class="td-action" style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn-primary btn-compact btn-generate" data-id="${schedule.id}" style="font-size: 0.8rem; padding: 4px 8px;">Cấp mã & Gửi Mail</button>
                 <button class="btn-outline btn-edit" data-id="${schedule.id}">Sửa</button>
                 <button class="btn-outline danger btn-delete" data-id="${schedule.id}">Xóa</button>
             </td>
@@ -258,6 +292,57 @@ function renderSchedules() {
             }
         });
     });
+
+    $$('.btn-generate').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const id = e.target.dataset.id;
+            await generateAndSendCodes(id);
+        });
+    });
+}
+
+async function generateAndSendCodes(id) {
+    const schedule = schedules.find(s => String(s.id) === String(id));
+    if (!schedule) return;
+    if (!schedule.committee || schedule.committee.length === 0) {
+        return showToast('Không có thành viên Hội đồng nào để cấp mã!', true);
+    }
+
+    // Generate 8-digit codes for each
+    schedule.committee.forEach(c => {
+        c.accessCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+    });
+
+    showToast('Đang tạo mã và gửi email...', false);
+
+    const payload = {
+        type: 'generate_code',
+        scheduleId: schedule.id,
+        scheduleName: schedule.name,
+        committee: schedule.committee,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        date: schedule.date
+    };
+
+    try {
+        const response = await fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain' },
+            redirect: 'follow'
+        });
+        const result = await response.json();
+        if (result.status === 'success') {
+            showToast('✅ Đã cấp mã và gửi email thành công!');
+        } else {
+            console.error(result);
+            showToast('⚠️ Có lỗi xảy ra: ' + (result.message || ''), true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('⚠️ Lỗi kết nối server', true);
+    }
 }
 
 function renderGvList() {
@@ -296,6 +381,42 @@ function renderGvList() {
     $('#gvCount').textContent = `${currentGvList.length} giảng viên`;
 }
 
+function renderCommitteeList() {
+    const list = $('#committeeList');
+    list.innerHTML = '';
+
+    if (currentCommitteeList.length === 0) {
+        list.innerHTML = '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:0.9rem;">Chưa có thành viên nào</div>';
+    } else {
+        currentCommitteeList.forEach((member, idx) => {
+            const item = document.createElement('div');
+            item.className = 'gv-item';
+            item.innerHTML = `
+                <div class="gv-item-info">
+                    <div class="gv-item-name">${escapeHtml(member.name)}</div>
+                    <div class="gv-item-lesson">${escapeHtml(member.email)}</div>
+                </div>
+                <button type="button" class="btn-remove-committee" data-index="${idx}" title="Xóa">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            `;
+            list.appendChild(item);
+        });
+
+        $$('.btn-remove-committee').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.currentTarget.dataset.index);
+                currentCommitteeList.splice(idx, 1);
+                renderCommitteeList();
+            });
+        });
+    }
+
+    $('#committeeCount').textContent = `${currentCommitteeList.length} thành viên`;
+}
+
 function editSchedule(id) {
     const schedule = schedules.find(s => String(s.id) === String(id));
     if (!schedule) return;
@@ -304,9 +425,13 @@ function editSchedule(id) {
     $('#scheduleName').value = schedule.name;
     $('#scheduleDate').value = schedule.date;
     $('#scheduleLocation').value = schedule.location || '';
+    $('#scheduleStartTime').value = schedule.startTime || '';
+    $('#scheduleEndTime').value = schedule.endTime || '';
 
     currentGvList = [...schedule.lecturers];
     renderGvList();
+    currentCommitteeList = schedule.committee ? [...schedule.committee] : [];
+    renderCommitteeList();
 
     $('#formTitle').textContent = 'Chỉnh Sửa Lịch Đánh Giá';
     $('#btnSaveText').textContent = 'Cập nhật';
@@ -317,7 +442,9 @@ function resetForm() {
     currentScheduleId = null;
     scheduleForm.reset();
     currentGvList = [];
+    currentCommitteeList = [];
     renderGvList();
+    renderCommitteeList();
     $('#formTitle').textContent = 'Tạo Lịch Đánh Giá Mới';
     $('#btnSaveText').textContent = 'Lưu lịch đánh giá';
 }
@@ -425,7 +552,7 @@ function renderResultsForSchedule(sName) {
     const grid = $('#resultsGrid');
     grid.innerHTML = '';
     $('#emptyResults').style.display = 'none';
-    
+
     const container = $('#resultsContainer');
     if (container) container.style.display = 'block';
 
@@ -531,6 +658,55 @@ function formatDate(dateStr) {
         return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
     return dateStr;
+}
+
+/**
+ * Format a time value from Google Sheets.
+ * Accepts: "HH:MM", "HH:MM:SS", or ISO datetime string like "1899-12-30T02:53:30.000Z"
+ * Returns: "HH:MM"
+ */
+function formatTime(timeVal) {
+    if (!timeVal) return '';
+    const s = String(timeVal);
+    // Already HH:MM or HH:MM:SS
+    if (/^\d{1,2}:\d{2}/.test(s)) {
+        return s.substring(0, 5);
+    }
+    // ISO string from Google Sheets
+    if (s.includes('T')) {
+        // Try to parse the time components from ISO string and offset it back from UTC to GMT+7 (in 1899, Saigon offset is +07:06:30)
+        // This is timezone-independent and prevents issues where client browser timezone is not Saigon
+        const match = s.match(/T(\d{2}):(\d{2}):(\d{2})/);
+        if (match) {
+            let h = parseInt(match[1], 10);
+            let m = parseInt(match[2], 10);
+            let sec = parseInt(match[3], 10);
+
+            // Add 7 hours, 6 minutes, 30 seconds (Saigon historical offset in 1899)
+            m += 6;
+            sec += 30;
+            if (sec >= 60) {
+                m += Math.floor(sec / 60);
+                sec = sec % 60;
+            }
+            h += 7;
+            if (m >= 60) {
+                h += Math.floor(m / 60);
+                m = m % 60;
+            }
+            h = h % 24;
+
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+
+        try {
+            const d = new Date(s);
+            const h = String(d.getUTCHours()).padStart(2, '0');
+            const m = String(d.getUTCMinutes()).padStart(2, '0');
+            return `${h}:${m}`;
+        } catch (e) { }
+    }
+    return s;
 }
 
 function escapeHtml(text) {

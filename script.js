@@ -5,7 +5,7 @@
 // =============================================
 // CONFIG - GOOGLE SHEET
 // =============================================
-const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwOiSL0MaTr1mJSERNr9Bf701n32bVJNz-w2PyYp434WnlqKGhWcBiZduVsd1H-744Y/exec';
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzczp0JYDLuYWl8RPA3eJ_Xc1wH_CB-YLDjSoHh9v2O_T9foEs1vDNnqdIEEWKgdrmx/exec';
 
 // =============================================
 // DATA
@@ -16,7 +16,6 @@ let schedules = [];
 
 let currentData = {
     reviewerName: '',
-    reviewerPhone: '',
     scheduleName: '',
     name: '', // lecturer name
     lesson: '',
@@ -65,6 +64,10 @@ async function loadSchedules() {
         const data = await res.json();
         if (data.status === 'success') {
             schedules = data.data || [];
+            schedules.forEach(s => {
+                s.startTime = formatTime(s.startTime);
+                s.endTime = formatTime(s.endTime);
+            });
             populateSchedules();
         } else {
             scheduleSelect.innerHTML = '<option value="" disabled selected>Lỗi tải dữ liệu</option>';
@@ -235,6 +238,50 @@ function formatDate(dateStr) {
     return dateStr;
 }
 
+function formatTime(timeVal) {
+    if (!timeVal) return '';
+    const s = String(timeVal);
+    // Already HH:MM or HH:MM:SS
+    if (/^\d{1,2}:\d{2}/.test(s)) {
+        return s.substring(0, 5);
+    }
+    // ISO string from Google Sheets
+    if (s.includes('T')) {
+        // Try to parse the time components from ISO string and offset it back from UTC to GMT+7 (in 1899, Saigon offset is +07:06:30)
+        // This is timezone-independent and prevents issues where client browser timezone is not Saigon
+        const match = s.match(/T(\d{2}):(\d{2}):(\d{2})/);
+        if (match) {
+            let h = parseInt(match[1], 10);
+            let m = parseInt(match[2], 10);
+            let sec = parseInt(match[3], 10);
+
+            // Add 7 hours, 6 minutes, 30 seconds (Saigon historical offset in 1899)
+            m += 6;
+            sec += 30;
+            if (sec >= 60) {
+                m += Math.floor(sec / 60);
+                sec = sec % 60;
+            }
+            h += 7;
+            if (m >= 60) {
+                h += Math.floor(m / 60);
+                m = m % 60;
+            }
+            h = h % 24;
+
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+
+        try {
+            const d = new Date(s);
+            const h = String(d.getUTCHours()).padStart(2, '0');
+            const m = String(d.getUTCMinutes()).padStart(2, '0');
+            return `${h}:${m}`;
+        } catch (e) { }
+    }
+    return s;
+}
+
 // =============================================
 // EVENTS
 // =============================================
@@ -259,15 +306,38 @@ function initEventListeners() {
         const schedule = schedules.find(s => String(s.id) === String(scheduleId));
         if (!schedule) return;
 
-        const revName = $('#reviewerName').value.trim();
-        const revPhone = $('#reviewerPhone').value.trim();
+        const accessCode = $('#accessCode').value.trim();
+        if (!accessCode) {
+            return showToast('Vui lòng nhập mã truy cập', true);
+        }
+
+        // Check Time Restriction
+        if (schedule.startTime && schedule.endTime) {
+            const now = new Date();
+            const currentTimeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            if (currentTimeStr < schedule.startTime || currentTimeStr > schedule.endTime) {
+                return showToast('Ngoài thời gian đánh giá của ca này!', true);
+            }
+        }
+
+        // Validate Access Code
+        let validMember = null;
+        if (schedule.committee && schedule.committee.length > 0) {
+            validMember = schedule.committee.find(c => c.accessCode === accessCode);
+        }
+
+        if (!validMember) {
+            return showToast('Mã truy cập không hợp lệ!', true);
+        }
 
         const lecturerIdx = lecturerSelect.value;
         const lecturer = schedule.lecturers[lecturerIdx];
-        if (!lecturer) return;
+        if (!lecturer) {
+            return showToast('Vui lòng chọn giảng viên', true);
+        }
 
-        currentData.reviewerName = revName;
-        currentData.reviewerPhone = revPhone;
+        currentData.reviewerName = validMember.name;
         currentData.scheduleName = schedule.name;
         currentData.name = lecturer.name;
         currentData.lesson = lecturer.lesson;
@@ -340,7 +410,6 @@ async function submitToGoogleSheet() {
         data: {
             timestamp: currentData.timestamp,
             name: currentData.name, // Tên giảng viên
-            phone: currentData.reviewerPhone, // SĐT người chấm
             lesson: currentData.lesson,
             reviewerName: currentData.reviewerName,
             scheduleName: currentData.scheduleName,
@@ -456,8 +525,7 @@ function showResult() {
 // =============================================
 function resetForm() {
     const oldSchedule = scheduleSelect.value;
-    const oldName = $('#reviewerName').value;
-    const oldPhone = $('#reviewerPhone').value;
+    const oldAccessCode = $('#accessCode').value;
 
     loginForm.reset();
     scoringForm.reset();
@@ -480,7 +548,6 @@ function resetForm() {
 
     currentData = {
         reviewerName: '',
-        reviewerPhone: '',
         scheduleName: '',
         name: '',
         lesson: '',
@@ -495,8 +562,7 @@ function resetForm() {
     // Restore reviewer info
     scheduleSelect.value = oldSchedule;
     if (oldSchedule) populateLecturers(oldSchedule);
-    $('#reviewerName').value = oldName;
-    $('#reviewerPhone').value = oldPhone;
+    $('#accessCode').value = oldAccessCode;
 
     isEditMode = false;
     $('#btnSubmit span').textContent = 'Gửi kết quả';
