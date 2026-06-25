@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,11 @@
     <meta name="description" content="Ứng dụng chấm điểm buổi dạy thử bảo vệ lên rank giảng viên">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- Background particles -->
     <div class="bg-particles" id="bgParticles"></div>
@@ -26,18 +29,21 @@
             <div class="login-logo">
                 <div class="logo-icon">
                     <svg viewBox="0 0 48 48" fill="none">
-                        <path d="M24 4L4 14l20 10 20-10L24 4z" fill="url(#g1)" opacity="0.9"/>
-                        <path d="M4 14v16l20 10V24L4 14z" fill="url(#g2)" opacity="0.8"/>
-                        <path d="M44 14v16L24 40V24l20-10z" fill="url(#g3)" opacity="0.7"/>
+                        <path d="M24 4L4 14l20 10 20-10L24 4z" fill="url(#g1)" opacity="0.9" />
+                        <path d="M4 14v16l20 10V24L4 14z" fill="url(#g2)" opacity="0.8" />
+                        <path d="M44 14v16L24 40V24l20-10z" fill="url(#g3)" opacity="0.7" />
                         <defs>
                             <linearGradient id="g1" x1="4" y1="4" x2="44" y2="24">
-                                <stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/>
+                                <stop stop-color="#6366f1" />
+                                <stop offset="1" stop-color="#8b5cf6" />
                             </linearGradient>
                             <linearGradient id="g2" x1="4" y1="14" x2="24" y2="40">
-                                <stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#a78bfa"/>
+                                <stop stop-color="#8b5cf6" />
+                                <stop offset="1" stop-color="#a78bfa" />
                             </linearGradient>
                             <linearGradient id="g3" x1="44" y1="14" x2="24" y2="40">
-                                <stop stop-color="#6366f1"/><stop offset="1" stop-color="#818cf8"/>
+                                <stop stop-color="#6366f1" />
+                                <stop offset="1" stop-color="#818cf8" />
                             </linearGradient>
                         </defs>
                     </svg>
@@ -51,8 +57,10 @@
                     <label for="scheduleSelect">Chọn lịch đánh giá</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
                         <select id="scheduleSelect" required>
                             <option value="" disabled selected>-- Chọn lịch đánh giá --</option>
@@ -64,10 +72,11 @@
                     <label for="accessCode">Mã truy cập (8 số)</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                         </svg>
-                        <input type="text" id="accessCode" placeholder="Nhập mã 8 số của bạn..." required pattern="[0-9]{8}" maxlength="8">
+                        <input type="text" id="accessCode" placeholder="Nhập mã 8 số của bạn..." required
+                            pattern="[0-9]{8}" maxlength="8">
                     </div>
                 </div>
 
@@ -75,8 +84,9 @@
                     <label for="lecturerSelect">Chọn giảng viên</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
                         </svg>
                         <select id="lecturerSelect" required disabled>
                             <option value="" disabled selected>-- Chọn lịch đánh giá trước --</option>
@@ -88,17 +98,18 @@
                     <label for="lessonName">Bài giảng</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                         </svg>
-                        <input type="text" id="lessonName" placeholder="Tự động điền..." readonly class="input-readonly">
+                        <input type="text" id="lessonName" placeholder="Tự động điền..." readonly
+                            class="input-readonly">
                     </div>
                 </div>
 
                 <button type="submit" class="btn-primary" id="btnStart">
                     <span>Bắt đầu chấm điểm</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                        <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                 </button>
             </form>
@@ -111,10 +122,13 @@
             <!-- Header -->
             <header class="scoring-header glass">
                 <div class="header-info">
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; width: 100%;">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; gap: 15px; width: 100%;">
                         <h2 style="margin: 0;">Phiếu Chấm Điểm Dạy Thử</h2>
-                        <button type="button" id="btnLogout" style="display: flex; align-items: center; gap: 6px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 6px 12px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 14px;">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <button type="button" id="btnLogout"
+                            style="display: flex; align-items: center; gap: 6px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 6px 12px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 14px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                 <polyline points="16 17 21 12 16 7"></polyline>
                                 <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -131,8 +145,8 @@
                 <div class="header-score">
                     <div class="total-score-ring">
                         <svg viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="52" class="ring-bg"/>
-                            <circle cx="60" cy="60" r="52" class="ring-fill" id="scoreRing"/>
+                            <circle cx="60" cy="60" r="52" class="ring-bg" />
+                            <circle cx="60" cy="60" r="52" class="ring-fill" id="scoreRing" />
                         </svg>
                         <div class="score-text">
                             <span class="score-number" id="totalScore">0</span>
@@ -160,10 +174,12 @@
                         <div class="criteria-item" data-criteria="1" data-max="5" data-group-id="1">
                             <div class="criteria-info">
                                 <span class="criteria-number">1</span>
-                                <span class="criteria-text">Xác định đúng mục tiêu bài học (kiến thức, kỹ năng, thái độ)</span>
+                                <span class="criteria-text">Xác định đúng mục tiêu bài học (kiến thức, kỹ năng, thái
+                                    độ)</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="1">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="1">
                                 <div class="slider-value"><span id="val1">0</span>/5</div>
                             </div>
                         </div>
@@ -173,7 +189,8 @@
                                 <span class="criteria-text">Nội dung chính xác, khoa học, cập nhật</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="2">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="2">
                                 <div class="slider-value"><span id="val2">0</span>/5</div>
                             </div>
                         </div>
@@ -183,7 +200,8 @@
                                 <span class="criteria-text">Bố cục bài giảng logic, mạch lạc</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="3">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="3">
                                 <div class="slider-value"><span id="val3">0</span>/5</div>
                             </div>
                         </div>
@@ -193,7 +211,8 @@
                                 <span class="criteria-text">Liên hệ thực tiễn, ví dụ minh họa phù hợp</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="4">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="4">
                                 <div class="slider-value"><span id="val4">0</span>/5</div>
                             </div>
                         </div>
@@ -203,7 +222,8 @@
                                 <span class="criteria-text">Phân bổ thời gian hợp lý cho từng phần</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="5">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="5">
                                 <div class="slider-value"><span id="val5">0</span>/5</div>
                             </div>
                         </div>
@@ -226,10 +246,12 @@
                         <div class="criteria-item" data-criteria="6" data-max="5" data-group-id="2">
                             <div class="criteria-info">
                                 <span class="criteria-number">6</span>
-                                <span class="criteria-text">Lựa chọn phương pháp phù hợp với nội dung và đối tượng</span>
+                                <span class="criteria-text">Lựa chọn phương pháp phù hợp với nội dung và đối
+                                    tượng</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="6">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="6">
                                 <div class="slider-value"><span id="val6">0</span>/5</div>
                             </div>
                         </div>
@@ -239,17 +261,20 @@
                                 <span class="criteria-text">Kết hợp linh hoạt nhiều phương pháp giảng dạy</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="7">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="7">
                                 <div class="slider-value"><span id="val7">0</span>/5</div>
                             </div>
                         </div>
                         <div class="criteria-item" data-criteria="8" data-max="5" data-group-id="2">
                             <div class="criteria-info">
                                 <span class="criteria-number">8</span>
-                                <span class="criteria-text">Phát huy tính chủ động, tư duy phản biện của người học</span>
+                                <span class="criteria-text">Phát huy tính chủ động, tư duy phản biện của người
+                                    học</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="8">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="8">
                                 <div class="slider-value"><span id="val8">0</span>/5</div>
                             </div>
                         </div>
@@ -259,7 +284,8 @@
                                 <span class="criteria-text">Gợi mở vấn đề, dẫn dắt người học khám phá kiến thức</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="9">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="9">
                                 <div class="slider-value"><span id="val9">0</span>/5</div>
                             </div>
                         </div>
@@ -285,7 +311,8 @@
                                 <span class="criteria-text">Slide / tài liệu trực quan rõ ràng, thẩm mỹ</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="10">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="10">
                                 <div class="slider-value"><span id="val10">0</span>/5</div>
                             </div>
                         </div>
@@ -295,7 +322,8 @@
                                 <span class="criteria-text">Sử dụng hiệu quả công cụ hỗ trợ giảng dạy</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="11">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="11">
                                 <div class="slider-value"><span id="val11">0</span>/5</div>
                             </div>
                         </div>
@@ -321,17 +349,20 @@
                                 <span class="criteria-text">Giọng nói rõ ràng, truyền cảm, tốc độ phù hợp</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="12">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="12">
                                 <div class="slider-value"><span id="val12">0</span>/5</div>
                             </div>
                         </div>
                         <div class="criteria-item" data-criteria="13" data-max="5" data-group-id="4">
                             <div class="criteria-info">
                                 <span class="criteria-number">13</span>
-                                <span class="criteria-text">Ngôn ngữ chính xác, sử dụng đúng thuật ngữ chuyên ngành</span>
+                                <span class="criteria-text">Ngôn ngữ chính xác, sử dụng đúng thuật ngữ chuyên
+                                    ngành</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="13">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="13">
                                 <div class="slider-value"><span id="val13">0</span>/5</div>
                             </div>
                         </div>
@@ -341,7 +372,8 @@
                                 <span class="criteria-text">Ngôn ngữ cơ thể tự tin, giao tiếp bằng mắt</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="14">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="14">
                                 <div class="slider-value"><span id="val14">0</span>/5</div>
                             </div>
                         </div>
@@ -367,7 +399,8 @@
                                 <span class="criteria-text">Tạo không khí học tập tích cực, thu hút sự chú ý</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="15">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="15">
                                 <div class="slider-value"><span id="val15">0</span>/5</div>
                             </div>
                         </div>
@@ -377,7 +410,8 @@
                                 <span class="criteria-text">Đặt câu hỏi kích thích tư duy, xử lý phản hồi tốt</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="16">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="16">
                                 <div class="slider-value"><span id="val16">0</span>/5</div>
                             </div>
                         </div>
@@ -403,7 +437,8 @@
                                 <span class="criteria-text">Có hoạt động kiểm tra, củng cố kiến thức</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="17">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="17">
                                 <div class="slider-value"><span id="val17">0</span>/5</div>
                             </div>
                         </div>
@@ -413,7 +448,8 @@
                                 <span class="criteria-text">Tổng kết bài học rõ ràng, giao nhiệm vụ tự học</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="18">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="18">
                                 <div class="slider-value"><span id="val18">0</span>/5</div>
                             </div>
                         </div>
@@ -439,7 +475,8 @@
                                 <span class="criteria-text">Trang phục, tác phong chuyên nghiệp, đúng mực</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="19">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="19">
                                 <div class="slider-value"><span id="val19">0</span>/5</div>
                             </div>
                         </div>
@@ -449,7 +486,8 @@
                                 <span class="criteria-text">Thể hiện sự nhiệt tình, tâm huyết với nghề</span>
                             </div>
                             <div class="score-slider">
-                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider" data-criteria="20">
+                                <input type="range" min="0" max="5" value="0" step="0.5" class="slider"
+                                    data-criteria="20">
                                 <div class="slider-value"><span id="val20">0</span>/5</div>
                             </div>
                         </div>
@@ -466,14 +504,14 @@
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" id="btnBack">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
                         </svg>
                         <span>Quay lại</span>
                     </button>
                     <button type="submit" class="btn-primary btn-submit" id="btnSubmit">
                         <span>Gửi kết quả</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                         </svg>
                     </button>
                 </div>
@@ -487,8 +525,8 @@
             <div class="result-card glass">
                 <div class="result-icon" id="resultIcon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
                 </div>
                 <h2 id="resultTitle">Đã gửi thành công!</h2>
@@ -511,17 +549,12 @@
                 </div>
 
                 <div class="result-actions">
-                    <button class="btn-secondary" id="btnEdit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                        </svg>
-                        <span>Chỉnh sửa</span>
-                    </button>
+
                     <button class="btn-primary" id="btnNew">
                         <span>Chấm mới</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
                         </svg>
                     </button>
                 </div>
@@ -537,4 +570,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
