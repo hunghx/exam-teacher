@@ -124,7 +124,7 @@ function doPost(e) {
         for (var i = 1; i < rows.length; i++) {
           if (rows[i][1] === d.name && rows[i][2] === d.reviewerName) {
             var row = i + 1;
-            sheetResult.getRange(row, 1, 1, 26).setValues([[
+            sheetResult.getRange(row, 1, 1, 27).setValues([[
               d.timestamp, d.name, d.reviewerName, d.lesson, d.scheduleName,
               d.score1, d.score2, d.score3, d.score4, d.score5,
               d.score6, d.score7, d.score8, d.score9,
@@ -160,7 +160,26 @@ function doPost(e) {
     }
 
     // ============================================
-    // 3. TẠO MÃ VÀ GỬI EMAIL (Sheet 3)
+    // 3. WEBHOOK TỪ LARK FORM (THÊM HỘI ĐỒNG)
+    // ============================================
+    if (data.type === 'lark_webhook_add_committee') {
+      var scheduleId = data.scheduleId || '';
+      var name = data.name || '';
+      var email = data.email || '';
+      // Tạo mã truy cập ngẫu nhiên 6 chữ số
+      var accessCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      sheetCommittee.appendRow([
+        scheduleId, name, email, accessCode
+      ]);
+      
+      return ContentService.createTextOutput(
+        JSON.stringify({ status: 'success', message: 'Thêm thành viên từ Lark thành công' })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // ============================================
+    // 4. TẠO MÃ VÀ GỬI EMAIL TỪ ADMIN APP (Sheet 3)
     // ============================================
     if (data.type === 'generate_code') {
       var cRows = sheetCommittee.getDataRange().getValues();
@@ -184,10 +203,55 @@ function doPost(e) {
                    "Vui lòng đăng nhập vào hệ thống và nhập mã này để tiến hành chấm điểm trong khung giờ quy định.\n" +
                    "Lưu ý: Mã này là mã cá nhân và chỉ có hiệu lực trong thời gian đánh giá.\n\n" +
                    "Trân trọng!";
+        
+        var loginLink = data.appUrl ? (data.appUrl + "?scheduleId=" + data.scheduleId + "&accessCode=" + member.accessCode) : "";
+        
+        var lecturersHtml = "";
+        if (data.lecturers && data.lecturers.length > 0) {
+            lecturersHtml = "<h3 style=\"margin-top: 25px; margin-bottom: 15px; color: #4f46e5; border-bottom: 2px solid #e0e7ff; padding-bottom: 8px; font-size: 18px;\">Danh sách Giảng viên tham gia:</h3><ul style=\"list-style: none; padding-left: 0; margin: 0;\">";
+            data.lecturers.forEach(function(gv) {
+                lecturersHtml += "<li style=\"background-color: #f8fafc; padding: 12px 15px; margin-bottom: 10px; border-left: 4px solid #818cf8; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);\">" +
+                    "<strong style=\"color: #334155; font-size: 16px;\">" + gv.name + "</strong><br>" +
+                    "<span style=\"color: #64748b; font-size: 14px; margin-top: 4px; display: inline-block;\">Chủ đề: " + gv.lesson + "</span>" +
+                "</li>";
+            });
+            lecturersHtml += "</ul>";
+        }
+
+        var htmlBody = "<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #334155; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);\">" +
+            "<div style=\"background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; padding: 25px 20px; text-align: center;\">" +
+                "<h2 style=\"margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.5px;\">Thông Báo Đánh Giá Dạy Thử</h2>" +
+            "</div>" +
+            "<div style=\"padding: 30px 25px;\">" +
+                "<p style=\"font-size: 16px; margin-top: 0;\">Kính gửi <strong>" + member.name + "</strong>,</p>" +
+                "<p style=\"font-size: 16px;\">Bạn đã được thêm vào Hội đồng chấm thi cho ca đánh giá:</p>" +
+                
+                "<div style=\"background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;\">" +
+                    "<p style=\"margin: 8px 0; font-size: 16px;\"><span style=\"color: #64748b; display: inline-block; width: 90px;\">Tên ca:</span> <strong style=\"color: #4f46e5; font-size: 18px;\">" + data.scheduleName + "</strong></p>" +
+                    "<p style=\"margin: 8px 0; font-size: 16px;\"><span style=\"color: #64748b; display: inline-block; width: 90px;\">Ngày:</span> <strong>" + data.date + "</strong></p>" +
+                    "<p style=\"margin: 8px 0; font-size: 16px;\"><span style=\"color: #64748b; display: inline-block; width: 90px;\">Thời gian:</span> <strong>" + data.startTime + " - " + data.endTime + "</strong></p>" +
+                    "<div style=\"margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1;\">" +
+                        "<p style=\"margin: 0; font-size: 16px;\"><span style=\"color: #64748b; display: inline-block; width: 90px;\">Mã OTP:</span> <span style=\"background-color: #fef08a; padding: 6px 12px; border-radius: 6px; color: #854d0e; font-weight: bold; font-size: 20px; letter-spacing: 3px; display: inline-block; vertical-align: middle; box-shadow: 0 1px 2px rgba(0,0,0,0.05);\">" + member.accessCode + "</span></p>" +
+                    "</div>" +
+                "</div>" +
+                
+                lecturersHtml +
+                
+                (loginLink ? "<div style=\"text-align: center; margin: 35px 0;\"><a href=\"" + loginLink + "\" style=\"background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: all 0.3s ease;\">Đăng nhập & Chấm điểm ngay</a></div>" : "<p style=\"font-size: 16px;\">Vui lòng đăng nhập vào hệ thống và nhập mã này để tiến hành chấm điểm trong khung giờ quy định.</p>") +
+                
+                "<div style=\"background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 15px; margin-top: 20px; border-radius: 0 6px 6px 0;\">" +
+                    "<p style=\"color: #b91c1c; font-style: italic; font-size: 14px; margin: 0;\">⚠️ Lưu ý: Mã OTP này là mã cá nhân bảo mật và chỉ có hiệu lực trong thời gian đánh giá.</p>" +
+                "</div>" +
+                
+                "<hr style=\"border: none; border-top: 1px solid #e2e8f0; margin: 25px 0;\">" +
+                "<p style=\"margin: 0; font-size: 15px; color: #64748b;\">Trân trọng,</p>" +
+                "<p style=\"margin: 5px 0 0 0; font-weight: bold; font-size: 16px; color: #334155;\">Ban Tổ Chức</p>" +
+            "</div>" +
+        "</div>";
                    
         if(member.email) {
           try {
-             GmailApp.sendEmail(member.email, subject, body);
+             GmailApp.sendEmail(member.email, subject, body, { htmlBody: htmlBody });
           } catch(e) {
              console.error("Lỗi gửi mail tới " + member.email + ": " + e.toString());
           }
@@ -314,4 +378,42 @@ Do bạn thay đổi code Apps Script và yêu cầu cấp quyền gửi Email (
 3. Ở mục Phiên bản (Version), chọn **Phiên bản mới** (New version).
 4. Nhấn **Triển khai** (Deploy) một lần nữa. 
 5. Lúc này Google sẽ hiện ra một cảnh báo yêu cầu bạn **Xác thực ủy quyền** để gửi Email. Bạn hãy cấp quyền bằng tài khoản Google của bạn (bấm Nâng cao -> Chuyển tới Script không an toàn -> Cho phép).
-6. Hoàn tất! Bạn không cần thay đổi đường link trong App. Mọi thứ đã sẵn sàng.
+6. Hoàn tất! Đừng quên copy lại **Web app URL** mới nhất.
+
+## Bước 4: Tạo Form trên Lark và cấu hình Automation (Tự động hóa)
+
+Để người dùng có thể điền Form trên Lark và tự động đẩy dữ liệu về Google Sheet danh sách Hội đồng, bạn làm theo các bước sau:
+
+**1. Tạo Base và Form trên Lark:**
+- Mở **Lark Base** (Bitable) và tạo một Base mới.
+- Trong bảng dữ liệu (Table), tạo các trường sau:
+  - **Mã ca**: Kiểu Text hoặc Dropdown (Dùng để người đăng ký chọn ID ca đánh giá).
+  - **Họ và tên**: Kiểu Text.
+  - **Email**: Kiểu Text (để lưu email liên hệ).
+- Tạo một **Form view** (Chế độ xem biểu mẫu) từ bảng này và gửi link cho mọi người đăng ký.
+
+**2. Cấu hình Automation (Quy trình tự động):**
+- Trong Lark Base, chọn **Automations** (Tự động hóa) ở góc phải trên.
+- **Tạo Rule mới**:
+  - **Trigger (Trình kích hoạt)**: Chọn **Record added** (Khi có bản ghi được thêm mới).
+  - **Action (Hành động)**: Chọn **Send web request** (Gửi yêu cầu web) hoặc **Webhook**.
+- **Cấu hình Request (Yêu cầu)**:
+  - **URL**: Dán `Web app URL` của Google Apps Script bạn vừa copy ở Bước 3.
+  - **Method**: Chọn `POST`.
+  - **Headers**: Bấm Add header, điền Key là `Content-Type` và Value là `application/json`.
+  - **Body format**: Chọn `JSON`.
+  - **Body**: Dán đoạn mã sau, và dùng nút "Insert field" (Chèn trường dữ liệu của Lark) để thay thế các biến cho đúng:
+
+```json
+{
+  "type": "lark_webhook_add_committee",
+  "scheduleId": "{{Mã ca}}",
+  "name": "{{Họ và tên}}",
+  "email": "{{Email}}"
+}
+```
+*(Lưu ý: Thay thế `{{Mã ca}}`, `{{Họ và tên}}`, `{{Email}}` bằng các biến dữ liệu tương ứng trong Lark Base của bạn bằng cách click vào để chèn)*
+
+**3. Kiểm tra:**
+- Thử điền một form trên Lark.
+- Mở Google Sheet -> Sheet 3 (Hội đồng) xem dữ liệu đã nhảy sang kèm theo mã truy cập 6 số ngẫu nhiên chưa nhé!

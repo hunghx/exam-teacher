@@ -5,7 +5,7 @@
 // =============================================
 // CONFIG - GOOGLE SHEET
 // =============================================
-const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzczp0JYDLuYWl8RPA3eJ_Xc1wH_CB-YLDjSoHh9v2O_T9foEs1vDNnqdIEEWKgdrmx/exec';
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwig14XC29o1wdv0feNuZCiT7HRVQq9rwChgdFacy4xhrWenVZC1f69PBrcJTiio1x8/exec';
 
 // =============================================
 // DATA
@@ -54,6 +54,46 @@ document.addEventListener('DOMContentLoaded', () => {
     initSliders();
     initEventListeners();
     loadSchedules();
+
+    // Check for active scoring session
+    const savedSession = sessionStorage.getItem('scoringSession');
+    if (savedSession) {
+        try {
+            currentData = JSON.parse(savedSession);
+            $('#displayName').textContent = currentData.name;
+            $('#displayLesson').textContent = currentData.lesson;
+
+            // Restore UI for score if needed, but for now just showing the screen is fine.
+            // When they F5, they just don't want to be thrown out of the screen.
+            switchScreen(screenScoring);
+
+            // Also need to restore slider values if we want them not to lose progress.
+            // They just want "don't be thrown out". We can restore slider values from currentData.scores
+            if (currentData.scores) {
+                $$('.slider').forEach(slider => {
+                    const criteriaId = slider.dataset.criteria;
+                    if (currentData.scores[criteriaId] !== undefined) {
+                        slider.value = currentData.scores[criteriaId];
+                        // Trigger input event to update colors and total
+                        slider.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+        } catch (e) {
+            sessionStorage.removeItem('scoringSession');
+        }
+    }
+
+    // Logout button
+    const btnLogout = $('#btnLogout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            if (confirm('Bạn có chắc chắn muốn thoát? Điểm đang chấm sẽ không được lưu.')) {
+                resetForm();
+                switchScreen(screenLogin);
+            }
+        });
+    }
 });
 
 async function loadSchedules() {
@@ -69,6 +109,18 @@ async function loadSchedules() {
                 s.endTime = formatTime(s.endTime);
             });
             populateSchedules();
+
+            // Auto-fill from URL params
+            const params = new URLSearchParams(window.location.search);
+            const urlScheduleId = params.get('scheduleId');
+            const urlAccessCode = params.get('accessCode');
+            if (urlScheduleId) {
+                scheduleSelect.value = urlScheduleId;
+                scheduleSelect.dispatchEvent(new Event('change'));
+            }
+            if (urlAccessCode) {
+                $('#accessCode').value = urlAccessCode;
+            }
         } else {
             scheduleSelect.innerHTML = '<option value="" disabled selected>Lỗi tải dữ liệu</option>';
         }
@@ -162,6 +214,9 @@ function updateScores() {
     } else {
         ring.style.stroke = '#ef4444';
     }
+
+    // Save progress to session
+    sessionStorage.setItem('scoringSession', JSON.stringify(currentData));
 }
 
 // =============================================
@@ -243,7 +298,8 @@ function formatTime(timeVal) {
     const s = String(timeVal);
     // Already HH:MM or HH:MM:SS
     if (/^\d{1,2}:\d{2}/.test(s)) {
-        return s.substring(0, 5);
+        const parts = s.split(':');
+        return String(parts[0]).padStart(2, '0') + ':' + String(parts[1]).padStart(2, '0');
     }
     // ISO string from Google Sheets
     if (s.includes('T')) {
@@ -312,10 +368,14 @@ function initEventListeners() {
         }
 
         // Check Time Restriction
-        if (schedule.startTime && schedule.endTime) {
-            const now = new Date();
-            const currentTimeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        const now = new Date();
+        const todayStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        if (!schedule.date || formatDate(schedule.date) !== todayStr) {
+            return showToast('Hôm nay không phải ngày đánh giá của ca này!', true);
+        }
 
+        if (schedule.startTime && schedule.endTime) {
+            const currentTimeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
             if (currentTimeStr < schedule.startTime || currentTimeStr > schedule.endTime) {
                 return showToast('Ngoài thời gian đánh giá của ca này!', true);
             }
@@ -524,6 +584,7 @@ function showResult() {
 // RESET FORM
 // =============================================
 function resetForm() {
+    sessionStorage.removeItem('scoringSession');
     const oldSchedule = scheduleSelect.value;
     const oldAccessCode = $('#accessCode').value;
 

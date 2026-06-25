@@ -111,8 +111,18 @@
             <!-- Header -->
             <header class="scoring-header glass">
                 <div class="header-info">
-                    <h2>Phiếu Chấm Điểm Dạy Thử</h2>
-                    <div class="lecturer-badge">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; width: 100%;">
+                        <h2 style="margin: 0;">Phiếu Chấm Điểm Dạy Thử</h2>
+                        <button type="button" id="btnLogout" style="display: flex; align-items: center; gap: 6px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 6px 12px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 14px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Thoát
+                        </button>
+                    </div>
+                    <div class="lecturer-badge" style="margin-top: 10px;">
                         <span class="badge-name" id="displayName"></span>
                         <span class="badge-divider">•</span>
                         <span class="badge-lesson" id="displayLesson"></span>

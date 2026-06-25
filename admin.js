@@ -10,7 +10,7 @@ let allResults = [];
 let groupedResults = {};
 
 // API Config
-const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzczp0JYDLuYWl8RPA3eJ_Xc1wH_CB-YLDjSoHh9v2O_T9foEs1vDNnqdIEEWKgdrmx/exec';
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwig14XC29o1wdv0feNuZCiT7HRVQq9rwChgdFacy4xhrWenVZC1f69PBrcJTiio1x8/exec';
 
 // DOM Elements
 const tabBtns = $$('.nav-item');
@@ -320,9 +320,11 @@ async function generateAndSendCodes(id) {
         scheduleId: schedule.id,
         scheduleName: schedule.name,
         committee: schedule.committee,
+        lecturers: schedule.lecturers,
         startTime: schedule.startTime,
         endTime: schedule.endTime,
-        date: schedule.date
+        date: formatDate(schedule.date),
+        appUrl: 'https://hunghx.github.io/exam-teacher/'
     };
 
     try {
