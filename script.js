@@ -424,11 +424,14 @@ function initEventListeners() {
     });
 
     // Edit button
-    $('#btnEdit').addEventListener('click', () => {
-        isEditMode = true;
-        switchScreen(screenScoring);
-        $('#btnSubmit span').textContent = 'Cập nhật kết quả';
-    });
+    const btnEdit = $('#btnEdit');
+    if (btnEdit) {
+        btnEdit.addEventListener('click', () => {
+            isEditMode = true;
+            switchScreen(screenScoring);
+            $('#btnSubmit span').textContent = 'Cập nhật kết quả';
+        });
+    }
 
     // New scoring button
     $('#btnNew').addEventListener('click', () => {
